@@ -1,0 +1,17 @@
+﻿Сборка начата 05.09.2016 1:51:58.
+     1>Проект "C:\Users\Татьяна\Documents\Visual Studio 2012\Projects\PrefTree\PrefTree\PrefTree.vcxproj" в узле 2 (целевые объекты Build).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt List.cpp List_Node.cpp main.cpp Node.cpp
+         List.cpp
+     1>List.cpp(1): fatal error C1083: Не удается открыть файл включение: List.h: No such file or directory
+         List_Node.cpp
+     1>List_Node.cpp(1): fatal error C1083: Не удается открыть файл включение: List_Node.h: No such file or directory
+         main.cpp
+     1>main.cpp(2): fatal error C1083: Не удается открыть файл включение: Node.h: No such file or directory
+         Node.cpp
+     1>Node.cpp(1): fatal error C1083: Не удается открыть файл включение: Node.h: No such file or directory
+     1>Построение проекта "C:\Users\Татьяна\Documents\Visual Studio 2012\Projects\PrefTree\PrefTree\PrefTree.vcxproj" завершено (целевые объекты Build) с ошибкой.
+
+Сбой построения.
+
+Затраченное время: 00:00:00.60
