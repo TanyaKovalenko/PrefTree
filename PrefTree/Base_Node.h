@@ -3,7 +3,6 @@
 
 struct Base_Node
 {
-	
 	unsigned char date;
 
 	void set(unsigned char value, bool is_id, bool is_leaf);

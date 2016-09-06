@@ -3,24 +3,23 @@
 
 //Node * insert(node *tree_head, )
 
-/*
-Node* insert(node* treeHead, char** word, int wordLen = 0) // вставка нового слова в дерево treeHead
-{
-	if( !wordLen ) 
-	{
-		// ?
-	}
 
-	if( !treeHead ) 
+Node* insert(Node* tree_head, vector<unsigned char> &phones) // вставка нового слова в дерево treeHead
+{
+	if( !tree_head ) 
 	{
-		phoneLen = strlen(word[inx]);
-		node* treeHead = new node(word[inx], phoneLen);
+		Base_Node * treeHead = new Node();		
 		
-		for (int inx = 0; inx < wordLen; inx++)
+		phones_length = phones.size();
+		
+		for (int inx = 0; inx < phones_length - 1; inx++)
 		{
-			phoneLen = strlen(word[inx]);
-			treeHead = new node(word[inx], phoneLen);
+			Base_Node * new_node = new Node();
+			new_node.set(phones_length[i], false, false);
 		}
+		
+		Base_Node * new_node = new Base_Node();
+		new_node.set(word[wordLen - 1], true, true);
 
 		return treeHead;
 	}
@@ -43,10 +42,60 @@ Node* insert(node* treeHead, char** word, int wordLen = 0) // вставка нового сло
 
 	return treeHead;
 }
-*/
+
+
+
 
 int main() {
 	
+  string line;
+  
+  std::ifstream dictionary ("dictionary.txt");
+  
+  if (dictionary.is_open())
+  {
+	  
+	
+	
+    while ( dictionary.good() )
+    {
+		vector<unsigned char> phones;
+		vector<unsigned char> word;
+		
+		getline (dictionary, line);		
+		
+		while(fscanf(line, "%c", &word[i]))
+		short int i = 0;
+		bool isPhone = false;
+	  
+		while ( (i == 0) || (word[i-1] != ('\n')) )
+		{		
+			fscanf(line, "%c", &word[i]); // массив, содержащий фонемы очередного слова
+        
+			if (isPhone)
+			{
+				i++;
+			}
+			
+			if (mas[i] == ('=')
+			{
+				isPhone = true;
+			}     
+
+		}
+		
+		
+			
+        if (word[i-1] == ('\n')) {
+            break;
+        }
+	  
+      cout << line << endl;
+    }
+    myfile.close();
+  }
+
+  else cout << "Unable to open file";
 
 	/*while(true) 
 	{
