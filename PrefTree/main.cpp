@@ -8,39 +8,15 @@
 
 const short int PHONE_ALPHABET_SIZE = 59;
 
-Base_Node* insert(Node* tree_head, std::vector<unsigned char> &phones) // вставка нового слова в дерево treeHead
+std::map<std::string, unsigned int> form_phone_alphabet ( std::string phone_file_pass )
 {
-	if( !tree_head ) 
-	{
-		Base_Node * tree_head = new Node();		
-		
-		short int phones_length = phones.size();
-		
-		for (int inx = 0; inx < phones_length - 1; inx++)
-		{
-			Base_Node * new_node = new Node();
-			new_node->set(phones[inx], false, false);
-		}
-		
-		Base_Node * new_node = new Base_Node();
-		new_node->set(phones[phones_length - 1], true, true);
-
-		return tree_head;
-	}
-
-	
-	return tree_head;
-}
-
-std::map<std::string, unsigned char> form_phone_alphabet ( std::string phone_file_pass )
-{
-	std::map<std::string, unsigned char> the_phone_alphabet;
+	std::map<std::string, unsigned int> the_phone_alphabet;
 	std::string line;  
 	std::ifstream phone_file ( phone_file_pass );
 
 	if ( phone_file.is_open() )
 	{			
-		unsigned char phone_id = 0;
+		unsigned int phone_id = 0;
 		short int first_quote_pos;
 		short int second_quote_pos;
 		std::string phone;
@@ -53,7 +29,7 @@ std::map<std::string, unsigned char> form_phone_alphabet ( std::string phone_fil
 						
 			phone = line.substr ( first_quote_pos + 1, second_quote_pos - first_quote_pos - 1 );
 						
-			the_phone_alphabet.insert ( std::pair<std::string, unsigned char>(phone, phone_id) );
+			the_phone_alphabet.insert ( std::pair<std::string, unsigned int>(phone, phone_id) );
 
 			phone_id++;
 
@@ -70,7 +46,7 @@ inline Node * as_node(Base_Node * node)
 	return dynamic_cast<Node *>(node);
 }
 
-void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigned char> &the_phone_alphabet )
+void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigned int> &the_phone_alphabet )
 {
 	std::string line;  
 	std::ifstream dictionary_file ( dictionary_file_pass );
@@ -79,10 +55,10 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 
 	if ( dictionary_file.is_open() )
 	{			
-		unsigned char phone_id = 0;
+		unsigned int phone_id = 0, word_id;
 		short int pos1, pos2;
-		std::vector<unsigned char> phones;
-		std::string phones_str, phone, word_id;
+		std::vector<unsigned int> phones;
+		std::string phones_str, phone;
 
 		if ( getline ( dictionary_file, line ) )
 		{
@@ -109,7 +85,9 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 				}							
 			}
 
-			word_id = line.substr ( pos2 + 1, line.size() - pos2 - 1 );
+			word_id = atoi ( line.substr ( pos2 + 1, line.size() - pos2 - 1 ).c_str() );
+
+			std::cout << word_id << std::endl;
 
 			// add word in the tree
 
@@ -119,16 +97,16 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 			List_Node *id_node;
 			bool need_add = false;
 
-			/*for ( short int phones_inx = 0; phones_inx < phones.size(); phones_inx++ )
+			for ( short int phones_inx = 0; phones_inx < phones.size(); phones_inx++ )
 			{
-				std::cout << phones[phones_inx] << std::cout;
+				std::cout << "???????" << phones[phones_inx] << std::endl;
 
 				// выполняем добавление новой фонемы в дерево
 				if (need_add) 
 				{
 					Base_Node *new_node = new Node();
 					new_node->set(phones[phones_inx], false, false);
-					//as_node(node)->children.push(new_node);
+					as_node(node)->children.push(new_node);
 					node = as_node(node)->children.first->node;
 				}
 				else
@@ -136,10 +114,11 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 					child_node = as_node(node)->children.first; 
 					while (child_node)
 					{
+						std::cout << "In while" << std::cout;
 						if (child_node->node->is_id()) 
 						{
 							id_node = child_node;
-							node_to_compare = child_node->node->children.first;
+							node_to_compare = as_node(child_node->node)->children.first;
 						} 
 						else
 						{
@@ -161,7 +140,7 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 								}
 								else
 								{
-									need_add = true;								
+									break;								
 								}
 							}						
 						}
@@ -173,22 +152,24 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 					
 					}
 
-					if (need_add) 
-					{
-						Base_Node *new_id_node = new Node();
-						new_id_node->set(word_id, true, false);
-						as_node(node)->children.push(new_id_node);
-						node = as_node(node)->children.first->node;
+					need_add = true;
 
-						Base_Node *new_node = new Node();
-						new_node->set(phones[phones_inx], false, false);
-						as_node(node)->children.push(new_node);
-						node = as_node(node)->children.first->node;
-					}
+					Base_Node *new_id_node = new Node();
+					new_id_node->set(word_id, true, false);
+					as_node(node)->children.push(new_id_node);
+					node = as_node(node)->children.first->node;
+
+					Base_Node *new_node = new Node();
+					new_node->set(phones[phones_inx], false, false);
+					as_node(node)->children.push(new_node);
+					node = as_node(node)->children.first->node;
+					
 				}
-			} */
+			} 
 
-			
+			node = as_node(tree_head)->children.first->node;
+
+			std::cout << "****" << as_node(node)->children.first->node->get() << std::endl;
 
 
 		}	
@@ -203,13 +184,13 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 
 int main() {
 	
-	std::map<std::string, unsigned char> the_phone_alphabet = form_phone_alphabet ( "phone.txt" );
+	std::map<std::string, unsigned int> the_phone_alphabet = form_phone_alphabet ( "phone.txt" );
 		
 	//Base_Node * tree_head = new Node();	
 
 	//tree_head = form_tree("dictionary.txt");
 
-	form_tree ( "dictionary.txt", the_phone_alphabet );
+	form_tree ( "dic.txt", the_phone_alphabet );
  
   
 	/*while(true) 

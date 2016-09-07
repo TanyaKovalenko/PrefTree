@@ -3,14 +3,14 @@
 #ifndef LIST_NODE_H 
 #define LIST_NODE_H
 
-struct Node;
+struct Base_Node;
 
 struct List_Node
 {
-	Node * node;
+	Base_Node * node;
 	List_Node * next;
 
-	List_Node(Node * _node) : node(_node), next(0) 
+	List_Node(Base_Node * _node) : node(_node), next(0) 
 	{
 		std::cout << "Construct List_Node" << std::endl;
 	}

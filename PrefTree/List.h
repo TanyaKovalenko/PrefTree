@@ -5,7 +5,7 @@
 #ifndef LIST_H 
 #define LIST_H 
 
-struct Node;
+struct Base_Node;
 
 struct List
 {

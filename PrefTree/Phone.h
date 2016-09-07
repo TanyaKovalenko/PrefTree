@@ -3,5 +3,5 @@
 struct Phone
 {
 	std::string phone;
-	unsigned char id;
+	unsigned int id;
 };

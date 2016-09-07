@@ -6,30 +6,30 @@ Base_Node::Base_Node()
 	std::cout << "Construct Base_Node" << std::endl;
 }
 
-void Base_Node::set(unsigned char value, bool is_id, bool is_leaf)
+void Base_Node::set(unsigned int value, bool is_id, bool is_leaf)
 {
 	date = value;
 	
 	if (is_id)
 	{
-		date = date | 64;
+		date = date | 1073741824;
 	}
 	
 	if (is_leaf)
 	{
-		date = date | 128;
+		date = date | 2147483648;
 	}
 }
 
-unsigned char Base_Node::get() const
+unsigned int Base_Node::get() const
 {
-	return date & 63;
+	return date & 1073741823;
 }
 
 bool Base_Node::is_id() const
 {
 	// старший бит в phone_num отвечает за то, является ли узел листом. 1 - да, 0 - нет
-	if (date & 64)
+	if (date & 1073741824)
 	{
 		return true;
 	}
@@ -39,7 +39,7 @@ bool Base_Node::is_id() const
 bool Base_Node::is_leaf() const
 {
 	// старший бит в phone_num отвечает за то, является ли узел листом. 1 - да, 0 - нет
-	if (date & 128)
+	if (date & 2147483648)
 	{
 		return true;
 	}

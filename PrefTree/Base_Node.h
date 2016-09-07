@@ -3,10 +3,10 @@
 
 struct Base_Node
 {
-	unsigned char date;
+	unsigned int date;
 
-	void set(unsigned char value, bool is_id, bool is_leaf);
-	unsigned char get() const;
+	void set(unsigned int value, bool is_id, bool is_leaf);
+	unsigned int get() const;
 
 	bool is_leaf() const;
 	bool is_id() const;
