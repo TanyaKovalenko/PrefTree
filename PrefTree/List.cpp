@@ -22,10 +22,8 @@ List::~List()
 	}	
 }
 
-void List::push(Node * node)
+void List::push(Base_Node * node)
 {	
-	std::cout << "In push..." << int(node->get()) << std::endl;
-
 	List_Node * list_node = new List_Node(node);
 
 	if(!first) 
