@@ -5,7 +5,7 @@
 
 List::~List() 
 {
-	std::cout << "Destruct List" << std::endl;
+	//std::cout << "Destruct List" << std::endl;
 
 	if (first)
 	{

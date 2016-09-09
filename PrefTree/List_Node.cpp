@@ -4,6 +4,6 @@
 
 List_Node::~List_Node() 
 {
-	std::cout << "Destruct List_Node" << std::endl;
+	//std::cout << "Destruct List_Node" << std::endl;
 	delete this->node;
 }

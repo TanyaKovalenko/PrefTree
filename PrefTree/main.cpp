@@ -60,16 +60,19 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 		std::vector<unsigned int> phones;
 		std::string phones_str, phone;
 
-		if ( getline ( dictionary_file, line ) )
+		while (dictionary_file.good())
 		{
+			getline ( dictionary_file, line );
+
+			if (!line[0])
+				continue;
+
 			phone = "";
 
 			pos1 = line.find ( '=' );
 			pos2 = line.find ( '#' );
 			
 			phones_str = line.substr ( pos1 + 1, pos2 - pos1 - 1 );
-
-			std::cout << phones_str << std::endl;
 
 			for ( short int phones_str_inx = 0; phones_str_inx <= phones_str.size(); phones_str_inx++ )
 			{
@@ -87,7 +90,6 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 
 			word_id = atoi ( line.substr ( pos2 + 1, line.size() - pos2 - 1 ).c_str() );
 
-			std::cout << word_id << std::endl;
 
 			// add word in the tree
 
@@ -99,79 +101,70 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 
 			for ( short int phones_inx = 0; phones_inx < phones.size(); phones_inx++ )
 			{
-				std::cout << "???????" << phones[phones_inx] << std::endl;
-
 				// выполняем добавление новой фонемы в дерево
 				if (need_add) 
 				{
 					Base_Node *new_node = new Node();
 					new_node->set(phones[phones_inx], false, false);
 					as_node(node)->children.push(new_node);
-					node = as_node(node)->children.first->node;
+					node = new_node;
 				}
 				else
-				{
+				{					
 					child_node = as_node(node)->children.first; 
-					while (child_node)
-					{
-						std::cout << "In while" << std::cout;
-						if (child_node->node->is_id()) 
-						{
-							id_node = child_node;
-							node_to_compare = as_node(child_node->node)->children.first;
-						} 
-						else
-						{
-							node_to_compare = child_node;
-						}
 					
+					if ((!child_node) || (child_node->node->is_id()))
+					{
+						need_add = true;
 
-						if ( phones[phones_inx] != node_to_compare->node->get() )
+						Base_Node *new_node = new Node();
+						new_node->set(phones[phones_inx], false, false);
+						as_node(node)->children.push(new_node);					
+						node = new_node;
+					} 
+					else 
+					{
+						while (child_node)
 						{
-							if (child_node->next)
+							node_to_compare = child_node;										
+
+							if ( phones[phones_inx] != node_to_compare->node->get() )
 							{
-								child_node = child_node->next;
-							} 
-							else
-							{
-								if (id_node)
+								if (child_node->next)
 								{
-									//next_node = node->children.node;
-								}
+									child_node = child_node->next;
+								} 
 								else
 								{
-									break;								
-								}
-							}						
-						}
-						else
-						{
-							node = node_to_compare->node;
-							break;
-						}
-					
+									need_add = true;
+
+									Base_Node *new_node = new Node();
+									new_node->set(phones[phones_inx], false, false);
+									as_node(node)->children.push(new_node);					
+									node = new_node;
+
+									break;	
+								}						
+							}
+							else
+							{
+								node = node_to_compare->node;
+
+								break;
+							}					
+						}						
 					}
 
-					need_add = true;
-
-					Base_Node *new_id_node = new Node();
-					new_id_node->set(word_id, true, false);
-					as_node(node)->children.push(new_id_node);
-					node = as_node(node)->children.first->node;
-
-					Base_Node *new_node = new Node();
-					new_node->set(phones[phones_inx], false, false);
-					as_node(node)->children.push(new_node);
-					node = as_node(node)->children.first->node;
-					
 				}
 			} 
 
-			node = as_node(tree_head)->children.first->node;
+			Base_Node *new_id_node = new Node();
+			new_id_node->set(word_id, true, false);
+			as_node(node)->children.push(new_id_node);
 
-			std::cout << "****" << as_node(node)->children.first->node->get() << std::endl;
+			std::cout << new_id_node->get() << std::endl;
 
-
+			phones.clear();
 		}	
 	}
 
@@ -190,7 +183,7 @@ int main() {
 
 	//tree_head = form_tree("dictionary.txt");
 
-	form_tree ( "dic.txt", the_phone_alphabet );
+	form_tree ( "dictionary.txt", the_phone_alphabet );
  
   
 	/*while(true) 

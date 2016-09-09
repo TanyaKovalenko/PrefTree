@@ -12,7 +12,7 @@ struct List
 	List_Node * first;
 	List() : first(0) 
 	{
-		std::cout << "Construct List" << std::endl;
+		//std::cout << "Construct List" << std::endl;
 	}
 	~List();
 	void push(Base_Node * node);

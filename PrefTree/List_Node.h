@@ -12,7 +12,7 @@ struct List_Node
 
 	List_Node(Base_Node * _node) : node(_node), next(0) 
 	{
-		std::cout << "Construct List_Node" << std::endl;
+		//std::cout << "Construct List_Node" << std::endl;
 	}
 
 	~List_Node();
