@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <stdlib.h>
 #include <map> 
 #include "Node.h"
 #include "Phone.h"
@@ -9,12 +10,13 @@
 const short int PHONE_ALPHABET_SIZE = 59;
 
 std::pair < std::map <std::string, unsigned int>, 
-			std::map<unsigned int, std::string > > form_phone_alphabet ( std::string phone_file_pass )
+			std::map < unsigned int, std::string > > form_phone_alphabet ( std::string phone_file_pass )
 {
 	std::map < std::string, unsigned int > the_phone_alphabet;
 	std::map < unsigned int, std::string > the_reverse_phone_alphabet;
 	std::string line;  
-	std::ifstream phone_file ( phone_file_pass );
+	std::ifstream phone_file;
+	phone_file.open ( phone_file_pass.c_str() );
 
 	if ( phone_file.is_open() )
 	{			
@@ -50,8 +52,8 @@ inline Node * as_node(Base_Node * node)
 }
 
 int get_id( Base_Node * tree_head, 
-		    const std::vector<std::string> &phones,
-			const std::map<std::string, unsigned int> & the_phone_alphabet )
+		    const std::vector < std::string > &phones,
+			const std::map < std::string, unsigned int > & the_phone_alphabet )
 {
 	Base_Node * node = tree_head;
 	List_Node * child_node;
@@ -115,11 +117,11 @@ int get_id( Base_Node * tree_head,
 
 Base_Node * form_tree ( Base_Node * tree_head, 
 					    const std::string & dictionary_file_pass, 
-						const std::map<std::string, unsigned int> & the_phone_alphabet )
+						const std::map < std::string, unsigned int > & the_phone_alphabet )
 {
 	int node_count = 0;
 	std::string line;  
-	std::ifstream dictionary_file ( dictionary_file_pass );
+	std::ifstream dictionary_file ( dictionary_file_pass.c_str() );
 
 	if ( dictionary_file.is_open() )
 	{			
@@ -286,7 +288,7 @@ void form_dictionary ( Base_Node * tree_head,
 	
 	std::vector<std::string> phones;
 
-	std::ofstream result_dictionary_file ( result_dictionary_file_pass );
+	std::ofstream result_dictionary_file ( result_dictionary_file_pass.c_str() );
 
 	child_node = as_node(tree_head)->children.first; 
 	
