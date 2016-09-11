@@ -122,7 +122,9 @@ std::pair<int, bool> get_id( Base_Node * tree_head,
 				}	
 			}
 		}		
-	}						
+	}					
+
+	return std::make_pair(0, false);
 }
 
 
