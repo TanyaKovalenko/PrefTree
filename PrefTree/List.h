@@ -7,13 +7,12 @@
 
 struct Base_Node;
 
+// The struct contains the list of the children of the every ordinary node.
 struct List
 {
 	List_Node * first;
 	List() : first(0) 
-	{
-		//std::cout << "Construct List" << std::endl;
-	}
+	{}
 	~List();
 	void push(Base_Node * node);
 

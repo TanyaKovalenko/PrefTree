@@ -1,12 +1,9 @@
-//#include "List_Node.h"
 #include "Node.h"
 #include <iostream>
 #include "List.h"
 
 List::~List() 
 {
-	//std::cout << "Destruct List" << std::endl;
-
 	if (first)
 	{
 		List_Node * next_list_node = first;
@@ -43,4 +40,4 @@ void List::push(Base_Node * node)
 			
 	return;
 			
-} // поместить элемент в очередь
+} // put node in the list

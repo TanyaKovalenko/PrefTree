@@ -1,10 +1,14 @@
 #include <iostream>
+#include <limits>
 #include "Base_Node.h"
 
+const unsigned int MAX_UNIT = std::numeric_limits<unsigned int>::max();
+const unsigned int OR_LEAF_MASK = ( ( MAX_UNIT / 2 ) + 1 );
+const unsigned int OR_ID_MASK = ( ( MAX_UNIT / 4 ) + 1 );
+const unsigned int GET_MASK = ( OR_ID_MASK - 1 );
+
 Base_Node::Base_Node()
-{
-	//std::cout << "Construct Base_Node" << std::endl;
-}
+{}
 
 void Base_Node::set(unsigned int value, bool is_id, bool is_leaf)
 {
@@ -12,24 +16,24 @@ void Base_Node::set(unsigned int value, bool is_id, bool is_leaf)
 	
 	if (is_id)
 	{
-		data = data | 1073741824;
+		data = data | OR_ID_MASK;
 	}
 	
 	if (is_leaf)
 	{
-		data = data | 2147483648;
+		data = data | OR_LEAF_MASK;
 	}
 }
 
 unsigned int Base_Node::get() const
 {
-	return data & 1073741823;
+	return data & GET_MASK;
 }
 
 bool Base_Node::is_id() const
 {
-	// старший бит в phone_num отвечает за то, является ли узел листом. 1 - да, 0 - нет
-	if (data & 1073741824)
+	// Significant bit in phone_num responsible for whether node is ID. 1 - yes , 0 - no
+	if (data & OR_ID_MASK)
 	{
 		return true;
 	}
@@ -38,8 +42,8 @@ bool Base_Node::is_id() const
 
 bool Base_Node::is_leaf() const
 {
-	// старший бит в phone_num отвечает за то, является ли узел листом. 1 - да, 0 - нет
-	if (data & 2147483648)
+	// Significant bit in phone_num responsible for whether node is leaf. 1 - yes , 0 - no
+	if (data & OR_LEAF_MASK)
 	{
 		return true;
 	}
@@ -47,6 +51,4 @@ bool Base_Node::is_leaf() const
 }
 
 Base_Node::~Base_Node()
-{
-	//std::cout << "Destruct Base_Node" << std::endl;
-}
+{}

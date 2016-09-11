@@ -50,7 +50,7 @@ std::pair < std::map < std::string, unsigned int >,
 	return std::make_pair ( the_phone_alphabet, the_reverse_phone_alphabet );
 }
 
-// ???
+// Helper to change type
 inline Node * as_node(Base_Node * node)
 {
 	return dynamic_cast<Node *>(node);
@@ -357,7 +357,7 @@ std::vector<std::string> phone_str_to_vect ( std::string phones_str )
 
 
 int main() {
-	
+
 	std::pair < std::map < std::string, unsigned int >, 
 				std::map < unsigned int, std::string > > phone_alphabet = form_phone_alphabet ( "phone.txt" );
 
@@ -390,6 +390,6 @@ int main() {
   
 	// Delete tree
 	delete tree_head;
-	
+		
 	return 0;
 }
