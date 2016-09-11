@@ -1,4 +1,5 @@
 #include <iostream>
+#include <list>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -217,7 +218,7 @@ Base_Node * form_tree ( Base_Node * tree_head,
 
 	if ( dictionary_file.is_open() )
 	{			
-		unsigned int phone_id = 0, word_id;
+		unsigned int word_id;
 		short int pos1, pos2;
 		std::vector<unsigned int> phones;
 		std::string phones_str, phone;
@@ -357,7 +358,7 @@ std::vector<std::string> phone_str_to_vect ( std::string phones_str )
 
 
 int main() {
-
+		
 	std::pair < std::map < std::string, unsigned int >, 
 				std::map < unsigned int, std::string > > phone_alphabet = form_phone_alphabet ( "phone.txt" );
 
@@ -389,7 +390,7 @@ int main() {
 	form_dictionary(tree_head, "result_dictionary_file.txt", the_reverse_phone_alphabet );
   
 	// Delete tree
-	delete tree_head;
-		
+	delete tree_head; 
+
 	return 0;
 }
