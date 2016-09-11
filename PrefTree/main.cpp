@@ -198,7 +198,7 @@ void add_word_in_the_tree ( Base_Node * tree_head,
 			}
 		} 
 
-		Base_Node *new_id_node = new Node();
+		Base_Node *new_id_node = new Base_Node();
 		new_id_node->set(word_id, true, false);
 		as_node(node)->children.push(new_id_node);
 		node_count++;
