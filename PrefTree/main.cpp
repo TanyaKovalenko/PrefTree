@@ -8,9 +8,11 @@
 
 const short int PHONE_ALPHABET_SIZE = 59;
 
-std::map<std::string, unsigned int> form_phone_alphabet ( std::string phone_file_pass )
+std::pair < std::map <std::string, unsigned int>, 
+			std::map<unsigned int, std::string > > form_phone_alphabet ( std::string phone_file_pass )
 {
-	std::map<std::string, unsigned int> the_phone_alphabet;
+	std::map < std::string, unsigned int > the_phone_alphabet;
+	std::map < unsigned int, std::string > the_reverse_phone_alphabet;
 	std::string line;  
 	std::ifstream phone_file ( phone_file_pass );
 
@@ -30,6 +32,7 @@ std::map<std::string, unsigned int> form_phone_alphabet ( std::string phone_file
 			phone = line.substr ( first_quote_pos + 1, second_quote_pos - first_quote_pos - 1 );
 						
 			the_phone_alphabet.insert ( std::pair<std::string, unsigned int>(phone, phone_id) );
+			the_reverse_phone_alphabet.insert ( std::pair<unsigned int, std::string>(phone_id, phone) );
 
 			phone_id++;
 
@@ -38,7 +41,7 @@ std::map<std::string, unsigned int> form_phone_alphabet ( std::string phone_file
 
 	phone_file.close();
 
-	return the_phone_alphabet;
+	return std::make_pair ( the_phone_alphabet, the_reverse_phone_alphabet );
 }
 
 inline Node * as_node(Base_Node * node)
@@ -46,12 +49,77 @@ inline Node * as_node(Base_Node * node)
 	return dynamic_cast<Node *>(node);
 }
 
-void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigned int> &the_phone_alphabet )
+int get_id( Base_Node * tree_head, 
+		    const std::vector<std::string> &phones,
+			const std::map<std::string, unsigned int> & the_phone_alphabet )
 {
+	Base_Node * node = tree_head;
+	List_Node * child_node;
+	List_Node * node_to_compare;
+
+	for (std::size_t phones_inx = 0; phones_inx <= phones.size(); phones_inx++ )
+	{		
+		child_node = as_node(node)->children.first;
+					
+		if (phones_inx == phones.size())
+		{
+			while (child_node)
+			{
+				if (child_node->node->is_id())
+				{
+					return child_node->node->get();
+				} 
+				if (child_node->next)
+				{
+					child_node = child_node->next;
+				} 
+				else
+				{
+					return 0;
+				}
+			}
+		} 
+		else 
+		{
+			if (child_node->node->is_id() && (phones_inx == phones.size()))
+			{
+				return child_node->node->get();
+			} 
+			else 
+			{
+				while (child_node)
+				{
+					node_to_compare = child_node;	
+
+					if ( the_phone_alphabet.find(phones[phones_inx])->second != node_to_compare->node->get() )
+					{
+						if (child_node->next)
+						{
+							child_node = child_node->next;
+						} 
+						else
+						{
+							return 0;
+						}						
+					}
+					else
+					{
+						node = node_to_compare->node;
+						break;
+					}					
+				}	
+			}
+		}		
+	}						
+}
+
+Base_Node * form_tree ( Base_Node * tree_head, 
+					    const std::string & dictionary_file_pass, 
+						const std::map<std::string, unsigned int> & the_phone_alphabet )
+{
+	int node_count = 0;
 	std::string line;  
 	std::ifstream dictionary_file ( dictionary_file_pass );
-
-	Base_Node * tree_head = new Node();
 
 	if ( dictionary_file.is_open() )
 	{			
@@ -74,7 +142,7 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 			
 			phones_str = line.substr ( pos1 + 1, pos2 - pos1 - 1 );
 
-			for ( short int phones_str_inx = 0; phones_str_inx <= phones_str.size(); phones_str_inx++ )
+			for (std::size_t phones_str_inx = 0; phones_str_inx <= phones_str.size(); phones_str_inx++ )
 			{
 				if ( ( phones_str[phones_str_inx] == ' ' ) || ( phones_str_inx == phones_str.size() ) )
 				{
@@ -96,14 +164,14 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 			Base_Node * node = tree_head;
 			List_Node *node_to_compare;
 			List_Node *child_node;
-			List_Node *id_node;
 			bool need_add = false;
 
-			for ( short int phones_inx = 0; phones_inx < phones.size(); phones_inx++ )
+			for ( std::size_t phones_inx = 0; phones_inx < phones.size(); phones_inx++ )
 			{
 				// выполняем добавление новой фонемы в дерево
 				if (need_add) 
 				{
+					node_count++;
 					Base_Node *new_node = new Node();
 					new_node->set(phones[phones_inx], false, false);
 					as_node(node)->children.push(new_node);
@@ -116,7 +184,7 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 					if ((!child_node) || (child_node->node->is_id()))
 					{
 						need_add = true;
-
+						node_count++;
 						Base_Node *new_node = new Node();
 						new_node->set(phones[phones_inx], false, false);
 						as_node(node)->children.push(new_node);					
@@ -137,7 +205,7 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 								else
 								{
 									need_add = true;
-
+									node_count++;
 									Base_Node *new_node = new Node();
 									new_node->set(phones[phones_inx], false, false);
 									as_node(node)->children.push(new_node);					
@@ -161,8 +229,7 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 			Base_Node *new_id_node = new Node();
 			new_id_node->set(word_id, true, false);
 			as_node(node)->children.push(new_id_node);
-
-			std::cout << new_id_node->get() << std::endl;
+			node_count++;
 
 			phones.clear();
 		}	
@@ -170,40 +237,128 @@ void form_tree ( std::string dictionary_file_pass, std::map<std::string, unsigne
 
 	dictionary_file.close();
 
+	std::cout << "Count of the codes are " << node_count << std::endl;
+
+	return tree_head;
+}
+
+void add_new_word_in_the_dictionary ( List_Node * child_node, 
+									  std::vector<std::string> & phones, 
+									  std::ofstream & result_dictionary_file,
+									  const std::map<unsigned int, std::string> & the_reverse_phone_alphabet ) 
+{
+	if (child_node->node->is_id())
+	{
+		for ( unsigned int inx = 0; inx < phones.size(); inx++ )
+		{
+			result_dictionary_file << phones[inx];
+
+			if (inx < phones.size() - 1) 
+			{
+				result_dictionary_file << " ";
+			}
+
+		}
+		result_dictionary_file << "#" << child_node->node->get() << '\n';
+
+		return;
+	}	
+
+	phones.push_back ( the_reverse_phone_alphabet.find ( child_node->node->get() )->second );
+
+	child_node = as_node(child_node->node)->children.first; 
+
+	while (child_node)
+	{
+		add_new_word_in_the_dictionary ( child_node, phones, result_dictionary_file, the_reverse_phone_alphabet );	
+		child_node = child_node->next; 
+	} 
+	
+	phones.pop_back();
+	return;
+}
+
+void form_dictionary ( Base_Node * tree_head, 
+					   std::string result_dictionary_file_pass, 
+					   const std::map<unsigned int, std::string> & the_reverse_phone_alphabet )
+{
+	List_Node *child_node;
+	
+	std::vector<std::string> phones;
+
+	std::ofstream result_dictionary_file ( result_dictionary_file_pass );
+
+	child_node = as_node(tree_head)->children.first; 
+	
+	while (child_node)
+	{
+		add_new_word_in_the_dictionary ( child_node, phones, result_dictionary_file, the_reverse_phone_alphabet );
+		child_node = child_node->next;
+	}
+
+	result_dictionary_file.close();
+	
 	return;
 }
 
 
+std::vector<std::string> phone_str_to_vect ( std::string phones_str )
+{
+	std::vector<std::string> phones;
+	std::string phone = "";
+
+	for ( std::size_t phones_str_inx = 0; phones_str_inx <= phones_str.size(); phones_str_inx++ )
+	{
+		if ( ( phones_str[phones_str_inx] == ' ' ) || ( phones_str_inx == phones_str.size() ) )
+		{
+			phones.push_back ( phone );
+			
+			phone = "";					
+		} 
+		else
+		{
+			phone += phones_str[phones_str_inx];
+		}							
+	}
+
+	return phones;
+}
+
 
 int main() {
 	
-	std::map<std::string, unsigned int> the_phone_alphabet = form_phone_alphabet ( "phone.txt" );
-		
-	//Base_Node * tree_head = new Node();	
+	std::pair < std::map <std::string, unsigned int>, 
+				std::map<unsigned int, std::string> > phone_alphabet = form_phone_alphabet ( "phone.txt" );
 
-	//tree_head = form_tree("dictionary.txt");
+	std::map<std::string, unsigned int> the_phone_alphabet = phone_alphabet.first;
+	std::map<unsigned int, std::string> the_reverse_phone_alphabet = phone_alphabet.second;
+	
+	//int count = 0;
 
-	form_tree ( "dictionary.txt", the_phone_alphabet );
- 
+	//while (count < 10000)
+	//{
+		Base_Node * tree_head = new Node();	
+
+		tree_head = form_tree (tree_head, "dictionary.txt", the_phone_alphabet );
+
+		std::vector<std::string> vec_phones = phone_str_to_vect("j o0 sh");
+
+		int id = get_id(tree_head, vec_phones, the_phone_alphabet);
+		if ( id == 0 )
+		{
+			std::cout << "There is no sutable word in the tree" << std::endl;		
+		}
+		else
+		{
+			std::cout << "The id is " << id << std::endl;
+		}
+
+		form_dictionary(tree_head, "result_dictionary_file.txt", the_reverse_phone_alphabet );
   
-	/*while(true) 
-	{
-			Node * node = new Node();
-			node->phone_num = 5;
-
-			Base_Node * child_node = new Base_Node();
-			child_node->phone_num = 3;
-			node->children.push(child_node);
-								
-			delete node;
-
-	} */
-
-	/*Base_Node * base_node = new Base_Node();
-
-	base_node->set(57, true, true);
-
-	std::cout << (int)base_node->get();*/
+		//count ++;
+		delete tree_head;
+	//}
+	
 
 	int y;
 	std::cin >> y;
