@@ -375,7 +375,7 @@ int main() {
 
 	// Find the id of the word
 		
-	std::vector<std::string> vec_phones = phone_str_to_vect ( "a0 t" );
+	std::vector<std::string> vec_phones = phone_str_to_vect ( "a0 f r' i4 k' e4" );
 
 	std::pair<int, bool> id = get_id(tree_head, vec_phones, the_phone_alphabet);
 
